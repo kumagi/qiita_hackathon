@@ -1,52 +1,76 @@
 require 'jubatus/recommender/client'
 require 'json'
 require 'yaml'
-require "ap"
 require 'qiita'
+require 'pp'
+
 cli = Jubatus::Client::Recommender.new "127.0.0.1", 9199
+config = Jubatus::Config_data.new "inverted_index", YAML.load_file('num.yaml').to_json
+cli.set_config("a", config)
 
 def convert_datum array
   param = array.map{|stock| [stock.to_s, 1.0]}
   Jubatus::Datum.new([],param)
 end
 
+TARGET_FILE = "result.txt"
+QIITA = Qiita.new token: "05d1694574e340b39498dffa651474d6"
+CONTINUATION = "continuation.txt"
 
-config = Jubatus::Config_data.new "inverted_index", YAML.load_file('num.yaml').to_json
-cli.set_config("a", config)
-user_stocks = JSON.parse(File.read("qiita_stocks_tomy_kaira_uuid.json"))
+def init
+  $searched_users = []
+  $user_stack = []
+  $result = {}
+end
 
-user_names = user_stocks.map{ |k,v| k}
+def jubafeed_user_stocks(user)
+  $searched_users << user
+  response = QIITA.user_stocks(user, per_page: 100)
+  uuids = response.map(&:uuid)
+  $result[user] = uuids
+  cli.update_row("a", user, convert_datum(uuids))
+  p ({ user: user, uuids: uuids })
+  $user_stack += (response.map(&:stock_users).flatten - $searched_users - $user_stack)
+end
 
-user_stocks.each{ |user, stocks|
-  fv = convert_datum stocks
-  cli.update_row("a", user, fv)
-}
+def run
+  until $user_stack.empty?
+    jubafeed_user_stocks $user_stack.shift
+  end
+end
+init
+$user_stack << "tomy_kaira"
 
-#from = convert_datum(user_stocks["tomy_kaira"])
-#good_items = cli.complete_row_from_data("a", from)
+if File.exist?(CONTINUATION)
+  json = JSON.parse(File.read(CONTINUATION))
+  $searched_users = json["searched_users"]
+  $user_stack     = json["user_stack"]
+  $result         = json["result"]
+end
 
-result = cli.complete_row_from_id "a","tomy_kaira"
-items_name = result.num_values.map{|k| k[0]} - user_stocks["tomy_kaira"]
-
-#items_name = good_items.num_values.map{|k| k[0] } - user_stocks["tomy_kaira"]
-
-#ap items_name
-
-inverse = {  }
-user_stocks.each { |user, ids|
-  ids.each { |id|
-    inverse[id] ||= []
-    inverse[id] << user
-  }
-}
-
-#ap inverse
-
-
-posts = items_name.map{ |id| [id,inverse[id].size] }.sort{|r,l| l[1]<=>r[1]}.slice(0..4).map{ |x| x[0]}
-posts.each{ |post|
-  puts Qiita.item(post).title + " "
-}
-
-#pp inverse
-
+begin
+  loop do
+    begin
+      run
+      seed = $searched_users.pop
+      init
+      $user_stack << seed
+    rescue => e
+      pp e
+    ensure
+      sleep 5
+    end
+  end
+rescue => e
+  puts "error!"
+  pp e
+ensure
+  puts "finish"
+  pp $result
+  File.open(TARGET_FILE, 'w') do |f|
+    f.write $result.to_json
+  end
+  File.open(CONTINUATION, 'w') do |f|
+    f.write({ searched_users: $searched_users, user_stack: $user_stack, result: $result }.to_json)
+  end
+end

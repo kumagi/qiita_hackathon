@@ -1,5 +1,4 @@
 require 'qiita'
-require 'ap'
 require 'json'
 
 def get_following from
