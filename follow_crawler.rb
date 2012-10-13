@@ -28,6 +28,7 @@ def run
   end
 end
 
+
 if File.exist?(CONTINUATION)
   json = JSON.parse(File.read(CONTINUATION))
   $searched_users = json["searched_users"]
