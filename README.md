@@ -1,6 +1,6 @@
 # qat
 
-![qat](qat.png)
+![qat](https://raw.github.com/tomykaira/qiita_hackathon/master/qat.png)
 
 Qiita + Jubatus(ネコ) + `cat` (Unix のコマンド)
 
