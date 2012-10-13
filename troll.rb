@@ -1,7 +1,7 @@
 require 'qiita'
 require 'json'
 
-QIITA = Qiita.new token: "40e0577f4c5446d3a71564186def9963"
+QIITA = Qiita.new token: ENV['QIITA_TOKEN']
 
 TARGET_FILE = "result.txt"
 CONTINUATION = "continuation.txt"
