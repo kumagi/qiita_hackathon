@@ -42,7 +42,7 @@ class QiitaItem
     end
 
     def recommended_uuids
-      (Recommender.recommend("tomy_kaira") - read_articles)
+      (Recommender.recommend(ARGV[0]) - read_articles)
     end
 
     def qiita

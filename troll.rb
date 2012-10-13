@@ -3,6 +3,12 @@
 require 'qiita'
 require 'json'
 
+unless ARGV.count == 1
+  puts "Usage: jubafeed.rb YOUR_QIITA_USER_NAME"
+  puts "Set your token with export QIITA_TOKEN=[YOUR_TOKEN]"
+  exit 1
+end
+
 QIITA = Qiita.new token: ENV['QIITA_TOKEN']
 
 TARGET_FILE = "result.txt"
