@@ -39,24 +39,24 @@ module Redcarpet
         end
       end
 
-      # def initialize
-      #   reset_list_count
-      # end
-
       def normal_text(text)
         text
       end
 
       def block_code(code, language)
-        "\n#{color(indent(code, 4), CODE_COLOR)}\n"
+        color(indent(code, 4), CODE_COLOR)
+      end
+
+      def block_quote(text)
+        indent(text, 4) + "\n"
       end
 
       def codespan(code)
-        block_code(code, nil)
+        color(code, CODE_COLOR)
       end
 
       def header(title, level)
-        "\n" + color("#{'#'*level} #{title}", C.bold + C.green) + "\n"
+        "\n" + color("#{'#'*level} #{title}", C.bold + C.green) + "\n\n"
       end
 
       def double_emphasis(text)
@@ -75,20 +75,20 @@ module Redcarpet
         "\n#{text}\n"
       end
 
-      # def list(content, list_type)
-      #   "\n#{content}\n"
-      #   reset_list_count
-      # end
+      def list(content, list_type)
+        reset_list_count
+        content
+      end
 
-      # def list_item(content, list_type)
-      #   case list_type
-      #   when :ordered
-      #     "#{@ordered_list_count}. #{content}\n"
-      #     @ordered_list_count += 1
-      #   when :unordered
-      #     "- #{content}\n"
-      #   end
-      # end
+      def list_item(content, list_type)
+        case list_type
+        when :ordered
+          @ordered_list_count += 1
+          "#{@ordered_list_count}. #{content}"
+        when :unordered
+          "- #{content}"
+        end
+      end
 
 
       # Other methods where the text content is in another argument
@@ -97,7 +97,7 @@ module Redcarpet
       end
       private
       def reset_list_count
-        @ordered_list_count = 1
+        @ordered_list_count = 0
       end
 
       def indent(text, indent = 4)
@@ -112,10 +112,12 @@ module Redcarpet
 end
 
 objects.each do |d|
-  puts "#{C.blue + C.bold}%s [%3s] %s [ %s ]#{C.reset}" % [d["user"]["url_name"].ljust(10), d["stock_count"], d["title"], "http://qiita.com/items/" + d["uuid"]]
+  puts "#{C.blue + C.bold}%s [%3s] %s\n[ %s ]#{C.reset}" % [d["user"]["url_name"].ljust(10), d["stock_count"], d["title"], "http://qiita.com/items/" + d["uuid"]]
   puts Redcarpet::Markdown.new(Redcarpet::Render::Terminal.new).render(d["raw_body"]).
+    gsub(/\n\n\n/, "\n\n").
     split("\n").
-    # take(5).
+    take(10).
     map{ |l| "    " + l }.
     join("\n")
+  puts ""
 end
