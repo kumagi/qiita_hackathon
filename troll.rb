@@ -1,7 +1,15 @@
+#!/usr/bin/env ruby
+
 require 'qiita'
 require 'json'
 
-QIITA = Qiita.new token: "40e0577f4c5446d3a71564186def9963"
+unless ARGV.count == 1
+  puts "Usage: jubafeed.rb YOUR_QIITA_USER_NAME"
+  puts "Set your token with export QIITA_TOKEN=[YOUR_TOKEN]"
+  exit 1
+end
+
+QIITA = Qiita.new token: ENV['QIITA_TOKEN']
 
 TARGET_FILE = "result.txt"
 CONTINUATION = "continuation.txt"

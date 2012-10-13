@@ -1,8 +1,16 @@
+#!/usr/bin/env ruby
+
 require 'jubatus/recommender/client'
 require 'json'
 require 'yaml'
 require 'qiita'
 require 'pp'
+
+unless ARGV.count == 1
+  puts "Usage: jubafeed.rb YOUR_QIITA_USER_NAME"
+  puts "Set your token with export QIITA_TOKEN=[YOUR_TOKEN]"
+  exit 1
+end
 
 $cli = Jubatus::Client::Recommender.new "127.0.0.1", 9199
 config = Jubatus::Config_data.new "inverted_index", YAML.load_file('num.yaml').to_json
@@ -55,7 +63,7 @@ def run
 end
 
 init
-$user_stack << "tomy_kaira"
+$user_stack << ARGV[0]
 
 if File.exist?(CONTINUATION)
   json = JSON.parse(File.read(CONTINUATION))
