@@ -81,11 +81,7 @@ rescue => e
   puts "error!"
   pp e
 ensure
-  puts "finish"
-  pp $result
-  File.open(TARGET_FILE, 'w') do |f|
-    f.write $result.to_json
-  end
+  puts "terminated"
   File.open(CONTINUATION, 'w') do |f|
     f.write({ searched_users: $searched_users, user_stack: $user_stack, result: $result , inverse_map: $inverse_map}.to_json)
   end

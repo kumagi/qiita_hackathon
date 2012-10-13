@@ -5,6 +5,7 @@ QIITA = Qiita.new token: "40e0577f4c5446d3a71564186def9963"
 
 TARGET_FILE = "result.txt"
 CONTINUATION = "continuation.txt"
+user = ARGV[0]
 
 $searched_users = []
 $user_stack = []
@@ -25,7 +26,7 @@ def run
   end
 end
 
-$user_stack << "tomy_kaira"
+$user_stack << user
 
 if File.exist?(CONTINUATION)
   json = JSON.parse(File.read(CONTINUATION))
