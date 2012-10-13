@@ -30,6 +30,7 @@ GEM
     redcarpet (2.2.1)
     rev (0.3.2)
       iobuffer (>= 0.1.3)
+    term-ansicolor (1.0.7)
 
 PLATFORMS
   ruby
@@ -40,3 +41,4 @@ DEPENDENCIES
   jubatus
   qiita
   redcarpet
+  term-ansicolor
