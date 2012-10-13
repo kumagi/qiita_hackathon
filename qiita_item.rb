@@ -11,8 +11,8 @@ class QiitaItem
   end
 
   def print
-    puts "#{C.blue + C.bold}%s [%3s] %s\n[ %s ]#{C.reset}" % [d["user"]["url_name"].ljust(10), d["stock_count"], d["title"], "http://qiita.com/items/" + d["uuid"]]
-    puts Redcarpet::Markdown.new(Redcarpet::Render::Terminal.new).render(d["raw_body"]).
+    puts "#{C.blue + C.bold}%s [%3s] %s\n[ %s ]#{C.reset}" % [@item["user"]["url_name"].ljust(10), @item["stock_count"], @item["title"], "http://qiita.com/items/" + @item["uuid"]]
+    puts Redcarpet::Markdown.new(Redcarpet::Render::Terminal.new).render(@item["raw_body"]).
       gsub(/\n\n\n/, "\n\n").
       split("\n").
       take(10).
@@ -23,10 +23,10 @@ class QiitaItem
 
   class << self
     def download_items_to_read
-      uuids = recommended_uuids
+      uuids = recommended_uuids[0...5]
       mark_read_articles(uuids)
       puts "Downloading articles to read..."
-      uids.map { |uuid| puts "Dowloading #{uuid}"; qiita.item(uuid) }
+      uuids.map { |uuid| puts "Dowloading #{uuid}"; self.new(qiita.item(uuid)) }
     end
 
     def read_articles
