@@ -12,11 +12,11 @@ $result = {}
 
 def save_user_stocks(user)
   $searched_users << user
-  response = QIITA.user_stocks(user)
+  response = QIITA.user_stocks(user, per_page: 100)
   uuids = response.map(&:uuid)
   $result[user] = uuids
   p ({ user: user, uuids: uuids })
-  $user_stack += (response.map(&:stock_users).flatten - $searched_users)
+  $user_stack += (response.map(&:stock_users).flatten - $searched_users - $user_stack)
 end
 
 def run
