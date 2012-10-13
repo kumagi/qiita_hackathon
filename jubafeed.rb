@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'jubatus/recommender/client'
 require 'json'
 require 'yaml'
@@ -55,7 +57,7 @@ def run
 end
 
 init
-$user_stack << "tomy_kaira"
+$user_stack << ARGV[0]
 
 if File.exist?(CONTINUATION)
   json = JSON.parse(File.read(CONTINUATION))

@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'qiita'
 require 'json'
 require 'redcarpet'
