@@ -2,7 +2,7 @@ require 'qiita'
 require 'json'
 require 'pp'
 
-QIITA = Qiita.new token: "40e0577f4c5446d3a71564186def9963"
+QIITA = Qiita.new token: "05d1694574e340b39498dffa651474d6"
 TARGET_FILE = "tag_result.txt"
 CONTINUATION = "tag_continuation.txt"
 

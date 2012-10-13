@@ -16,6 +16,5 @@ end
 
 seed = JSON.parse(File.read(seed_file))
 result = $cli.complete_row_from_id "a", user_name
-pp result
 tags = result.num_values.map{|k|k[0]} - seed[user_name]
-pp tags
+pp tags.slice(0..10)
