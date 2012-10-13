@@ -14,7 +14,7 @@ def convert_datum array
 end
 
 TARGET_FILE = "result.txt"
-QIITA = Qiita.new token: "05d1694574e340b39498dffa651474d6"
+QIITA = Qiita.new token: ENV['QIITA_TOKEN']
 CONTINUATION = "continuation.txt"
 INVERSE_MAP = "inverse_map.json"
 
