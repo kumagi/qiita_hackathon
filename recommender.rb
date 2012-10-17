@@ -13,7 +13,7 @@ module Recommender
 
     def recommend user
       cli = Jubatus::Client::Recommender.new "127.0.0.1", 9199
-      qiita = Qiita.new token: "05d1694574e340b39498dffa651474d6"
+      qiita = Qiita.new token: ENV['QIITA_TOKEN']
       inverse_map = "inverse_map.json"
       abort "put the user name" if user.nil?
 
